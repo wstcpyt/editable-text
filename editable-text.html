@@ -34,7 +34,7 @@ Example:
     <paper-icon-button on-click="iconbuttonClicked" icon="create"></paper-icon-button>
     <paper-dialog id="modal">
       <h2>{{dialogTitle}}</h2>
-      <paper-input></paper-input>
+      <paper-input id="inputtext"></paper-input>
       <div class="buttons">
         <paper-button on-click="updateFirebase" dialog-confirm autofocus>Save</paper-button>
         <paper-button dialog-dismiss>Cancel</paper-button>
@@ -73,7 +73,7 @@ Example:
     },
     updateFirebase: function () {
       var updateObj = {};
-      updateObj[this.path] = "changedvalue2";
+      updateObj[this.path] = this.$$("#inputtext").value;
       this.ref.update(updateObj)
     }
   });

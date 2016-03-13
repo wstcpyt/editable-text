@@ -1,0 +1,81 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <seed-element></seed-element>
+
+@demo
+-->
+<dom-module id="editable-text">
+  <template>
+    <style>
+      paper-button{
+        padding: 5px;
+      }
+    </style>
+    <paper-icon-button on-click="iconbuttonClicked" icon="create"></paper-icon-button>
+    <paper-dialog id="modal" modal>
+      <h2>{{dialogTitle}}</h2>
+      <paper-input></paper-input>
+      <div class="buttons">
+        <paper-button on-click="updateFirebase" dialog-confirm autofocus>Save</paper-button>
+        <paper-button dialog-dismiss>Cancel</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+</dom-module>
+
+<script>
+
+  Polymer({
+    is: 'editable-text',
+    properties:{
+      path: String,
+      data: {
+        type: String,
+        notify: true
+      },
+      dialogTitle:{
+        type: String
+      }
+    },
+    ready: function(){
+      this.ref = new Firebase("https://labwebapp.firebaseio.com");
+      var _this = this;
+      this.ref.child(this.path).on("value", function(snapshot) {
+        _this.data = snapshot.val();
+      }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+      });
+    },
+    iconbuttonClicked: function() {
+      var dialog = this.$$('#modal');
+      dialog.open()
+    },
+    updateFirebase: function () {
+      var updateObj = {};
+      updateObj[this.path] = "changedvalue2";
+      this.ref.update(updateObj)
+    }
+  });
+
+</script>
